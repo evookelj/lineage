@@ -6,16 +6,12 @@ use std::io::prelude::*;
 use std::path::Path;
 
 fn line(x0: usize, y0: usize, x1: usize, y1: usize, screen: &mut [[[i32; 3]; 500]; 500]) {
-	let x0 = 0;
-	let y0 = 250;
-	let x1 = 250;
-	let y1 = 400;
 	let mut x = x0 as usize;
 	let mut y = y0 as usize;
 	let a = 2*(y1-y0) as isize;
 	let b = -2*(x1-x0) as isize;
 	let mut d: isize = 2*a+b;
-	while x < xn1 {
+	while x < x1 {
 		screen[x][y] = [130,130,255];
 
 		if d>0 {
