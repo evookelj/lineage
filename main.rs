@@ -48,9 +48,10 @@ fn get_num(which: &'static str) -> usize {
     return num;
 }
 
-fn draw_line(screen: &mut [[[i32; 3]; 500]; 500], x0: usize, y0: usize, x1: usize, y1: usize) {
-	let dx: isize = (x1-x0) as isize;
-	let dy: isize = (y1-y0) as isize;
+fn draw_line(x0: usize, y0: usize, x1: usize, y1: usize, screen: &mut [[[i32; 3]; 500]; 500]) {
+	let dx: isize = (x1 as isize)-(x0 as isize) as isize;
+	let dy: isize = (y1 as isize)-(y0 as isize) as isize;
+
 	if (dx < 0 && dy > 0) || //slope neg
 		(dx > 0 && dy < 0) ||
 		(dy > dx) {
@@ -66,7 +67,7 @@ fn user_coords(screen: &mut [[[i32; 3]; 500]; 500]) -> bool {
 	let x1 = get_num("x1");
 	let y1 = get_num("y1");
 
-	draw_line(screen, x0,y0,x1,y1);
+	draw_line(x0,y0,x1,y1, screen);
 
 	println!("Type something and enter to add a line. Otherwise, just enter");
 	let mut resp = String::new();
