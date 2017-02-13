@@ -6,18 +6,18 @@ use std::io::prelude::*;
 use std::path::Path;
 use std::io;
 
-fn plot(x: usize, y: usize, screen: &mut [[[i32; 3]; 500]; 500]) {
+fn plot(x: isize, y: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
 	let y2 = 250+(y/2) as usize;
 	let yf = (499-y2 as isize).abs() as usize;
 	let xf = 250+(x/2) as usize;
 	screen[yf][xf] = [255,255,255];
 }
 
-fn line(x0: usize, y0: usize, x1: usize, y1: usize, screen: &mut [[[i32; 3]; 500]; 500]) {
-	let mut x = x0 as usize;
-	let mut y = y0 as usize;
+fn line1(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
+	let mut x = x0 as isize;
+	let mut y = y0 as isize;
 	if y0>y1 || x0>x1 {
-		return line(x1,y1,x0,y0,screen);
+		return line1(x1,y1,x0,y0,screen);
 	}
 	let a = 2*(y1-y0) as isize;
 	let b = -2*(x1-x0) as isize;
@@ -36,28 +36,109 @@ fn line(x0: usize, y0: usize, x1: usize, y1: usize, screen: &mut [[[i32; 3]; 500
 		x0, y0, x1, y1);
 }
 
-fn get_num(which: &'static str) -> usize {
-	println!("Input your desired {} [0,499]", which);
-	let mut num = String::new();
-	io::stdin().read_line(&mut num).expect("Failed to read line");
+fn line2(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
+	let mut x = x0 as isize;
+	let mut y = y0 as isize;
+	if y0>y1 || x0>x1 {
+		return line2(x1,y1,x0,y0,screen);
+	}
+	let a = 2*(y1-y0) as isize;
+	let b = -2*(x1-x0) as isize;
+	let mut d: isize = 2*b+a;
+	while y < y1 {
+		plot(x,y, screen);
 
-	let num: usize = num.trim().parse()
-        .expect("Please type a number on [0,499]!");
+		if d<0 {
+			x += 1;
+			d += a;
+		}
+		y += 1;
+		d += b;
+	}
+	println!("Drew line from ({},{}) to ({},{})", 
+		x0, y0, x1, y1);
+}
+
+//DON'T WORK YET (MIGHT NOT BE HERE THO)
+fn line7(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
+	let mut x = x0 as isize;
+	let mut y = y0 as isize;
+	if y0>y1 || x0>x1 {
+		return line2(x1,y1,x0,y0,screen);
+	}
+	let a = 2*(y1-y0) as isize;
+	let b = -2*(x1-x0) as isize;
+	let mut d: isize = a-(2*b);
+	while y > y1 {
+		plot(x,y, screen);
+
+		if d>0 { //bc deltay = A = negative
+			x += 1;
+			d += a;
+		}
+		y -= 1;
+		d -= b;
+	}
+	println!("Drew line from ({},{}) to ({},{})", 
+		x0, y0, x1, y1);
+}
+
+//DON'T WORK YET (MIGHT NOT BE HERE THO)
+fn line8(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
+	let mut x = x0 as isize;
+	let mut y = y0 as isize;
+	if y0>y1 || x0>x1 {
+		return line8(x1,y1,x0,y0,screen);
+	}
+	let a = 2*(y1-y0) as isize;
+	let b = -2*(x1-x0) as isize;
+	let mut d: isize = 2*a-b;
+	while x < x1 {
+		plot(x,y, screen);
+
+		if d<0 {
+			y -= 1;
+			d -= b;
+		}
+		x += 1;
+		d += a;
+	}
+	println!("Drew line from ({},{}) to ({},{})", 
+		x0, y0, x1, y1);
+}
+
+fn get_num(which: &'static str) -> isize {
+	println!("Input your desired {} [-250,250]", which);
+	let mut num = String::new();
+	io::stdin().read_line(&mut num)
+		.expect("Failed to read line");
+
+	let num: isize = num.trim().parse()
+        .expect("Please enter a number [-250,250]");
     println!("{}: {}", which, num);
 
     return num;
 }
 
-fn draw_line(x0: usize, y0: usize, x1: usize, y1: usize, screen: &mut [[[i32; 3]; 500]; 500]) {
-	let dx: isize = (x1 as isize)-(x0 as isize) as isize;
-	let dy: isize = (y1 as isize)-(y0 as isize) as isize;
+fn draw_line(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
+	let dx: isize = x1-x0 as isize;
+	let dy: isize = y1-y0 as isize;
+	if dx<0 {
+		draw_line(x1,y1,x0,y0,screen);
+	}
 
-	if (dx < 0 && dy > 0) || //slope neg
-		(dx > 0 && dy < 0) ||
-		(dy > dx) {
-		println!("Slope must be >= 0 and < 1. Line cannot be drawn at this time.");
+	let m = dy/dx;
+
+	if (m >= 0) && (m > 1) {
+		line1(x0,y0,x1,y1,screen);
+	} else if m>1 {
+		line2(x0,y0,x1,y1,screen);
+	} else if m<=-1 {
+		line7(x0,y0,x1,y1,screen);
+	} else if (m <= 0) && (m > -1) {
+		line8(x0,y0,x1,y1,screen);
 	} else {
-		line(x0,y0,x1,y1, screen);
+		println!("Slope of {} not implemented yet", m);
 	}
 }
 
