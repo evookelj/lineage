@@ -7,15 +7,15 @@ use std::path::Path;
 use std::io;
 
 fn plot(x: isize, y: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
-	let y2 = 250+(y/2) as usize;
+	let y2 = (250+(y/2)) as usize;
 	let yf = (499-y2 as isize).abs() as usize;
-	let xf = 250+(x/2) as usize;
+	let xf = (250+(x/2)) as usize;
 	screen[yf][xf] = [255,255,255];
 }
 
 fn line1(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
-	let mut x = x0 as isize;
-	let mut y = y0 as isize;
+	let mut x = x0;
+	let mut y = y0;
 	if y0>y1 || x0>x1 {
 		return line1(x1,y1,x0,y0,screen);
 	}
@@ -37,8 +37,8 @@ fn line1(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 50
 }
 
 fn line2(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
-	let mut x = x0 as isize;
-	let mut y = y0 as isize;
+	let mut x = x0;
+	let mut y = y0;
 	if y0>y1 || x0>x1 {
 		return line2(x1,y1,x0,y0,screen);
 	}
@@ -61,9 +61,9 @@ fn line2(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 50
 
 //DON'T WORK YET (MIGHT NOT BE HERE THO)
 fn line7(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
-	let mut x = x0 as isize;
-	let mut y = y0 as isize;
-	if y0>y1 || x0>x1 {
+	let mut x = x0;
+	let mut y = y0;
+	if y0<y1 || x0>x1 {
 		return line2(x1,y1,x0,y0,screen);
 	}
 	let a = 2*(y1-y0) as isize;
@@ -87,14 +87,17 @@ fn line7(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 50
 fn line8(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
 	let mut x = x0 as isize;
 	let mut y = y0 as isize;
-	if y0>y1 || x0>x1 {
+	if y0<y1 || x0>x1 {
 		return line8(x1,y1,x0,y0,screen);
 	}
+	println!("a");
 	let a = 2*(y1-y0) as isize;
 	let b = -2*(x1-x0) as isize;
+	println!("b");
 	let mut d: isize = 2*a-b;
+	println!("Init done");
 	while x < x1 {
-		plot(x,y, screen);
+		plot(x,y,screen);
 
 		if d<0 {
 			y -= 1;
@@ -108,13 +111,13 @@ fn line8(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 50
 }
 
 fn get_num(which: &'static str) -> isize {
-	println!("Input your desired {} [-250,250]", which);
+	println!("Input your desired {} [-499,499]", which);
 	let mut num = String::new();
 	io::stdin().read_line(&mut num)
 		.expect("Failed to read line");
 
 	let num: isize = num.trim().parse()
-        .expect("Please enter a number [-250,250]");
+        .expect("Please enter a number [-499,499]");
     println!("{}: {}", which, num);
 
     return num;
