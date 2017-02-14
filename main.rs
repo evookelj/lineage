@@ -32,8 +32,6 @@ fn line1(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 500]
 		x += 1;
 		d += a;
 	}
-	println!("Drew line from ({},{}) to ({},{})", 
-		x0, y0, x1, y1);
 }
 
 fn line2(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 500], color: [u32; 3]) {
@@ -55,8 +53,6 @@ fn line2(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 500]
 		y += 1;
 		d += b;
 	}
-	println!("Drew line from ({},{}) to ({},{})", 
-		x0, y0, x1, y1);
 }
 
 fn line7(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 500], color: [u32; 3]) {
@@ -78,8 +74,6 @@ fn line7(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 500]
 		y -= 1;
 		d -= b;
 	}
-	println!("Drew line from ({},{}) to ({},{})", 
-		x0, y0, x1, y1);
 }
 
 
@@ -102,8 +96,6 @@ fn line8(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 500]
 		x += 1;
 		d += a;
 	}
-	println!("Drew line from ({},{}) to ({},{})", 
-		x0, y0, x1, y1);
 }
 
 fn get_num(which: &'static str, min: i32, max: i32) -> i32 {
@@ -133,6 +125,9 @@ fn draw_line(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 
 
 	let m = dy/dx;
 
+	if (dy==0.0) && (dx==0.0) {
+		return ;
+	}
 	if (m >= 0.0) && (m < 1.0) {
 		line1(x0,y0,x1,y1,screen,color);
 	} else if m>=1.0 {
@@ -141,6 +136,8 @@ fn draw_line(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 
 		line8(x0,y0,x1,y1,screen,color);
 	} else if m<=-1.0 {
 		line7(x0,y0,x1,y1,screen,color);
+	} else {
+		println!("Should never reach this");
 	}
 }
 
