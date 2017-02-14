@@ -166,8 +166,8 @@ fn user_coords(screen: &mut [[[u32; 3]; 500]; 500]) -> bool {
 fn img(screen: &mut [[[u32; 3]; 500]; 500]) {
 	let mut i:i32 = -250;
 	let mut j:i32 = -250;
-	while i<250 {
-		while j<250 {
+	while i<251 {
+		while j<251 {
 			let r = (i.abs()%255) as u32;
 			let g = (j.abs()%255) as u32;
 			let b = ((i*j)%255) as u32;
