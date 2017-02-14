@@ -164,19 +164,25 @@ fn user_coords(screen: &mut [[[u32; 3]; 500]; 500]) -> bool {
 }
 
 fn img(screen: &mut [[[u32; 3]; 500]; 500]) {
-	let mut i: i32 = -250;
-	let mut j: i32 = -250;
+	let mut i:i32 = -250;
+	let mut j:i32 = -250;
 	while i<250 {
 		while j<250 {
-			println!("i {},j {}", i,j);
-			let r = (i.abs()%250) as u32;
-			let g = (j.abs()%250) as u32;
-			let b = (i*j) as u32;
+			let r = (i.abs()%255) as u32;
+			let g = (j.abs()%255) as u32;
+			let b = ((i*j)%255) as u32;
 			let color: [u32; 3] = [r,g,b];
 			draw_line(i,(i-j)%250,j,(j-i)%250,screen,color);
-			j += 100;
+
+			let r = ((i/(j+1))%255) as u32;
+			let g = ((j/(i+1))%255) as u32;
+			let b = ((r*g)%255) as u32;
+			let color: [u32; 3] = [r,g,b];
+			draw_line(((i-j)%250),i*-1,((j-i)%250),j*-1,screen,color);
+			j += 10;
 		}
-		i += 100;
+		i += 10;
+		j=-250;
 	}
 }
 
@@ -204,11 +210,11 @@ fn main() {
 	//inner array: [r,g,b] for each pixel
 	let mut screen: [[[u32; 3]; 500]; 500] = [[[0; 3]; 500]; 500];
 
- //USER INPUT
-	loop {
-		if !user_coords(&mut screen) { break; }
-	} 
-	//img(&mut screen);
+ // //USER INPUT
+	// loop {
+	// 	if !user_coords(&mut screen) { break; }
+	// } 
+	img(&mut screen);
 
 	for i in 0..500 {
 		for j in 0..500 {
