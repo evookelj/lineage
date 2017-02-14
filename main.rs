@@ -7,9 +7,9 @@ use std::path::Path;
 use std::io;
 
 fn plot(x: i32, y: i32, screen: &mut [[[u32; 3]; 500]; 500], color: [u32; 3]) {
-	let y2 = (250+(y/2)) as usize;
+	let y2 = (250+y) as usize;
 	let yf = (499-y2 as i32).abs() as usize;
-	let xf = (250+(x/2)) as usize;
+	let xf = (250+x) as usize;
 	screen[yf][xf] = color;
 }
 
@@ -141,8 +141,6 @@ fn draw_line(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 
 		line8(x0,y0,x1,y1,screen,color);
 	} else if m<=-1.0 {
 		line7(x0,y0,x1,y1,screen,color);
-	} else {
-		println!("If this is ever printed, I did something wrong");
 	}
 }
 
@@ -152,10 +150,10 @@ fn user_coords(screen: &mut [[[u32; 3]; 500]; 500]) -> bool {
 	let b = get_num("blue",0,255) as u32;
 	let color: [u32; 3] = [r,g,b];
 
-	let x0 = get_num("x0",-499,499);
-	let y0 = get_num("y0",-499,499);
-	let x1 = get_num("x1",-499,499);
-	let y1 = get_num("y1",-499,499);
+	let x0 = get_num("x0",-250,250);
+	let y0 = get_num("y0",-250,250);
+	let x1 = get_num("x1",-250,250);
+	let y1 = get_num("y1",-250,250);
 
 	draw_line(x0,y0,x1,y1, screen, color);
 
@@ -163,6 +161,23 @@ fn user_coords(screen: &mut [[[u32; 3]; 500]; 500]) -> bool {
 	let mut resp = String::new();
 	io::stdin().read_line(&mut resp).expect("Failed to read line");
 	return resp.len()>1;
+}
+
+fn img(screen: &mut [[[u32; 3]; 500]; 500]) {
+	let mut i: i32 = -250;
+	let mut j: i32 = -250;
+	while i<250 {
+		while j<250 {
+			println!("i {},j {}", i,j);
+			let r = (i.abs()%250) as u32;
+			let g = (j.abs()%250) as u32;
+			let b = (i*j) as u32;
+			let color: [u32; 3] = [r,g,b];
+			draw_line(i,(i-j)%250,j,(j-i)%250,screen,color);
+			j += 100;
+		}
+		i += 100;
+	}
 }
 
 fn main() {
@@ -189,11 +204,11 @@ fn main() {
 	//inner array: [r,g,b] for each pixel
 	let mut screen: [[[u32; 3]; 500]; 500] = [[[0; 3]; 500]; 500];
 
-	//line(0,250,250,400,&mut screen);
-	//line(8,22,499,499,&mut screen);
+ //USER INPUT
 	loop {
 		if !user_coords(&mut screen) { break; }
-	}
+	} 
+	//img(&mut screen);
 
 	for i in 0..500 {
 		for j in 0..500 {
