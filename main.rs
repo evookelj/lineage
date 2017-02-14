@@ -6,24 +6,24 @@ use std::io::prelude::*;
 use std::path::Path;
 use std::io;
 
-fn plot(x: isize, y: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
+fn plot(x: i32, y: i32, screen: &mut [[[u32; 3]; 500]; 500], color: [u32; 3]) {
 	let y2 = (250+(y/2)) as usize;
-	let yf = (499-y2 as isize).abs() as usize;
+	let yf = (499-y2 as i32).abs() as usize;
 	let xf = (250+(x/2)) as usize;
-	screen[yf][xf] = [255,255,255];
+	screen[yf][xf] = color;
 }
 
-fn line1(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
+fn line1(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 500], color: [u32; 3]) {
 	let mut x = x0;
 	let mut y = y0;
-	if y0>y1 || x0>x1 {
-		return line1(x1,y1,x0,y0,screen);
+	if x0>x1 {
+		return line1(x1,y1,x0,y0,screen,color);
 	}
-	let a = 2*(y1-y0) as isize;
-	let b = -2*(x1-x0) as isize;
-	let mut d: isize = 2*a+b;
+	let a = 2*(y1-y0) as i32;
+	let b = -2*(x1-x0) as i32;
+	let mut d: i32 = 2*a+b;
 	while x < x1 {
-		plot(x,y, screen);
+		plot(x,y, screen, color);
 
 		if d>0 {
 			y += 1;
@@ -36,17 +36,17 @@ fn line1(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 50
 		x0, y0, x1, y1);
 }
 
-fn line2(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
+fn line2(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 500], color: [u32; 3]) {
 	let mut x = x0;
 	let mut y = y0;
-	if y0>y1 || x0>x1 {
-		return line2(x1,y1,x0,y0,screen);
+	if x0>x1 {
+		return line2(x1,y1,x0,y0,screen,color);
 	}
-	let a = 2*(y1-y0) as isize;
-	let b = -2*(x1-x0) as isize;
-	let mut d: isize = 2*b+a;
+	let a = 2*(y1-y0) as i32;
+	let b = -2*(x1-x0) as i32;
+	let mut d: i32 = 2*b+a;
 	while y < y1 {
-		plot(x,y, screen);
+		plot(x,y, screen,color);
 
 		if d<0 {
 			x += 1;
@@ -59,18 +59,17 @@ fn line2(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 50
 		x0, y0, x1, y1);
 }
 
-//DON'T WORK YET (MIGHT NOT BE HERE THO)
-fn line7(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
+fn line7(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 500], color: [u32; 3]) {
 	let mut x = x0;
 	let mut y = y0;
-	if y0<y1 || x0>x1 {
-		return line2(x1,y1,x0,y0,screen);
+	if x0>x1 {
+		return line2(x1,y1,x0,y0,screen,color);
 	}
-	let a = 2*(y1-y0) as isize;
-	let b = -2*(x1-x0) as isize;
-	let mut d: isize = a-(2*b);
+	let a = 2*(y1-y0) as i32;
+	let b = -2*(x1-x0) as i32;
+	let mut d: i32 = a-(2*b);
 	while y > y1 {
-		plot(x,y, screen);
+		plot(x,y, screen,color);
 
 		if d>0 { //bc deltay = A = negative
 			x += 1;
@@ -83,21 +82,18 @@ fn line7(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 50
 		x0, y0, x1, y1);
 }
 
-//DON'T WORK YET (MIGHT NOT BE HERE THO)
-fn line8(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
-	let mut x = x0 as isize;
-	let mut y = y0 as isize;
-	if y0<y1 || x0>x1 {
-		return line8(x1,y1,x0,y0,screen);
+
+fn line8(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 500], color: [u32; 3]) {
+	let mut x = x0 as i32;
+	let mut y = y0 as i32;
+	if x0>x1 {
+		return line8(x1,y1,x0,y0,screen,color);
 	}
-	println!("a");
-	let a = 2*(y1-y0) as isize;
-	let b = -2*(x1-x0) as isize;
-	println!("b");
-	let mut d: isize = 2*a-b;
-	println!("Init done");
+	let a = 2*(y1-y0) as i32;
+	let b = -2*(x1-x0) as i32;
+	let mut d: i32 = 2*a-b;
 	while x < x1 {
-		plot(x,y,screen);
+		plot(x,y,screen,color);
 
 		if d<0 {
 			y -= 1;
@@ -110,48 +106,58 @@ fn line8(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 50
 		x0, y0, x1, y1);
 }
 
-fn get_num(which: &'static str) -> isize {
-	println!("Input your desired {} [-499,499]", which);
+fn get_num(which: &'static str, min: i32, max: i32) -> i32 {
+	println!("Input your desired {} [{},{}]", which,min,max);
 	let mut num = String::new();
 	io::stdin().read_line(&mut num)
 		.expect("Failed to read line");
 
-	let num: isize = num.trim().parse()
-        .expect("Please enter a number [-499,499]");
+	let num: i32 = num.trim().parse()
+        .expect("Failed to read number");
+
+    if (num>max) || (num<min) {
+    	println!("{} not in range [{},{}]. Try again",num,min,max);
+    	return get_num(which,min,max);
+    }
     println!("{}: {}", which, num);
 
     return num;
 }
 
-fn draw_line(x0: isize, y0: isize, x1: isize, y1: isize, screen: &mut [[[i32; 3]; 500]; 500]) {
-	let dx: isize = x1-x0 as isize;
-	let dy: isize = y1-y0 as isize;
-	if dx<0 {
-		draw_line(x1,y1,x0,y0,screen);
+fn draw_line(x0: i32, y0: i32, x1: i32, y1: i32, screen: &mut [[[u32; 3]; 500]; 500], color: [u32; 3]) {
+	let dx: f64 = (x1 as f64)-(x0 as f64) as f64;
+	let dy: f64 = (y1 as f64)-(y0 as f64) as f64;
+	if dx<0.0 {
+		draw_line(x1,y1,x0,y0,screen,color);
 	}
 
 	let m = dy/dx;
 
-	if (m >= 0) && (m > 1) {
-		line1(x0,y0,x1,y1,screen);
-	} else if m>1 {
-		line2(x0,y0,x1,y1,screen);
-	} else if m<=-1 {
-		line7(x0,y0,x1,y1,screen);
-	} else if (m <= 0) && (m > -1) {
-		line8(x0,y0,x1,y1,screen);
+	if (m >= 0.0) && (m < 1.0) {
+		line1(x0,y0,x1,y1,screen,color);
+	} else if m>=1.0 {
+		line2(x0,y0,x1,y1,screen,color);
+	}  else if (m <= 0.0) && (m > -1.0) {
+		line8(x0,y0,x1,y1,screen,color);
+	} else if m<=-1.0 {
+		line7(x0,y0,x1,y1,screen,color);
 	} else {
-		println!("Slope of {} not implemented yet", m);
+		println!("If this is ever printed, I did something wrong");
 	}
 }
 
-fn user_coords(screen: &mut [[[i32; 3]; 500]; 500]) -> bool {
-	let x0 = get_num("x0");
-	let y0 = get_num("y0");
-	let x1 = get_num("x1");
-	let y1 = get_num("y1");
+fn user_coords(screen: &mut [[[u32; 3]; 500]; 500]) -> bool {
+	let r = get_num("red",0,255) as u32;
+	let g = get_num("green",0,255) as u32;
+	let b = get_num("blue",0,255) as u32;
+	let color: [u32; 3] = [r,g,b];
 
-	draw_line(x0,y0,x1,y1, screen);
+	let x0 = get_num("x0",-499,499);
+	let y0 = get_num("y0",-499,499);
+	let x1 = get_num("x1",-499,499);
+	let y1 = get_num("y1",-499,499);
+
+	draw_line(x0,y0,x1,y1, screen, color);
 
 	println!("Type something and enter to add a line. Otherwise, just enter");
 	let mut resp = String::new();
@@ -181,7 +187,7 @@ fn main() {
 	};
 
 	//inner array: [r,g,b] for each pixel
-	let mut screen: [[[i32; 3]; 500]; 500] = [[[0; 3]; 500]; 500];
+	let mut screen: [[[u32; 3]; 500]; 500] = [[[0; 3]; 500]; 500];
 
 	//line(0,250,250,400,&mut screen);
 	//line(8,22,499,499,&mut screen);
