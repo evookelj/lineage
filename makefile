@@ -3,3 +3,4 @@ comp: main.rs
 
 run: comp main
 	./main
+	display img.ppm
